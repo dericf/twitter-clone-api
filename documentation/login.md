@@ -68,8 +68,10 @@ SUCCESS HTTP CODE: 204
 Example Data:
 
 JSON Data Sent:
+```
     { 
       "loginToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjUsInVzZXJuYW1lIjoiNXMiLCJleHAiOjE2MDY4ODc5ODB9.Pj3BL-Aq8FPLnVz0DRNcnWf_PuJxrfmJqfc96rCfk5Y"
     }
+```
 
 No Data Returned
