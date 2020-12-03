@@ -43,7 +43,7 @@ def tweet_likes_post():
 
 	if not tweet_id or not tweet:
 		return jsonify({"status": "error", "message":"Invalid Tweet Id"}), 500
-	if not tweet_id:
+	if not user_id:
 		return jsonify({"status": "error", "message":"Invalid User Id"}), 500
 	
 	# check if user has already liked that tweet
@@ -57,7 +57,7 @@ def tweet_likes_post():
 	query ="""INSERT INTO tweet_likes (user_id, tweet_id) VALUES (?,?)"""
 	success, tweet_id = db.insert_one(query, (user_id, tweet_id))
 	
-	return jsonify(None), response_code
+	return '', response_code
 
 #
 # NO PATCH
@@ -85,4 +85,4 @@ def tweet_likes_delete():
 
 	db.delete_one("DELETE FROM tweet_likes WHERE tweet_id=? AND user_id=?", (tweet_id,user_id))
 
-	return jsonify(None), response_code
+	return '', response_code
