@@ -14,7 +14,14 @@ def check_password(raw, hashed):
 
 
 def generate_login_token(userId, username):
-    return (jwt.encode({'userId': userId, "username": username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, current_app.config['SECRET_KEY'])).decode('UTF-8')
+    try:
+        token = (jwt.encode({'userId': userId, "username": username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, current_app.config['SECRET_KEY'])).decode('UTF-8')
+        
+    except Exception as e:
+        print("Error generating login token...")
+        token = None
+    finally:
+        return token
 
 
 def decode_login_token(token):
