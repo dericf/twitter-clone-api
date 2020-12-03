@@ -9,10 +9,11 @@ def tweets_get():
 	return_data = []
 	userId = request.args.get("userId")
 
-	query =f"""SELECT tweets.id, tweets.content, users.id, username 
+	query =f"""SELECT tweets.id, tweets.content, tweets.created_at, users.id, username
 	FROM tweets 
 	INNER JOIN users ON tweets.user_id=users.id 
-	{'WHERE tweets.user_id=?' if userId else ""}"""
+	{'WHERE tweets.user_id=?' if userId else ""}
+	ORDER BY tweets.created_at DESC"""
 	print(query)
 	success, tweets = db.get_all(query, (userId,) if userId else ())
 	# print("tweets")
@@ -21,12 +22,12 @@ def tweets_get():
 		for tweet in tweets:
 			return_data.append({ 
 					"tweetId": tweet[0],
-					"userId": tweet[2],
-					"username": tweet[3],
 					"content": tweet[1],
-					"createdAt": "0000-00-00"
+					"createdAt": tweet[2],
+					"userId": tweet[3],
+					"username": tweet[4]
 			})
-	return jsonify(return_data)
+	return jsonify(return_data), 200
 
 
 @app.route("/api/tweets", methods=["POST"])
@@ -45,8 +46,10 @@ def tweets_post():
 		return jsonify({"status": "error", "message":"Invalid user Id"})
 	if not content:
 		return jsonify({"status": "error", "message":"Invalid Content"})
-	query ="""INSERT INTO tweets (user_id, content) VALUES (?,?)"""
+	query ="""INSERT INTO tweets (user_id, content, created_at) VALUES (?,?, date('now'))"""
 	success, tweet_id = db.insert_one(query, (user_id, content))
+
+	_, tweet = db.get_one("SELECT created_at FROM tweets WHERE id=?", (tweet_id,))
 
 	if success:
 		return_data.append({ 
@@ -54,7 +57,7 @@ def tweets_post():
 				"tweetId": tweet_id,
 				"username": login_token.get("username"),
 				"content": content,
-				"createdAt": "0000-00-00"
+				"createdAt": tweet[0]
 		})
 	return jsonify(return_data), response_code
 
@@ -62,7 +65,7 @@ def tweets_post():
 @app.route("/api/tweets", methods=["PATCH"])
 def tweets_patch():
 	return_data = []
-	response_code = 500
+	response_code = 200
 
 	login_token = utils.decode_login_token(request.json.get('loginToken'))
 	user_id = login_token.get("userId")
