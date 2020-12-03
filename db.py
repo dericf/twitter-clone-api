@@ -113,7 +113,7 @@ def get_user_by_email(email):
     conn = get_conn()
     try:
         cursor = conn.cursor()
-        cursor.execute("SELECT id, username, email, bio, password_hash FROM users WHERE email=?", (email,))
+        cursor.execute("SELECT id, username, email, bio, password_hash, birthdate FROM users WHERE email=?", (email,))
         result = cursor.fetchone()
         close_con(conn)
         return (True, result)
