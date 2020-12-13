@@ -15,12 +15,12 @@ def login_post():
         print("User", user)
 
         if not user:
-            return jsonify({"status": "error", "message":"No user with that email exists"}), 500
+            return jsonify({"status": "error", "message":"No user with that email exists"}), 403
         #
         # Check if passwords match
         #
         if not utils.check_password(password, user[4]):
-            return jsonify({"status": "error", "message":"Passwords do not match"}), 500
+            return jsonify({"status": "error", "message":"Passwords do not match"}), 403
         #
         # Generate the  login token
         #
